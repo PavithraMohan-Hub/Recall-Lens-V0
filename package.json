@@ -1,0 +1,14 @@
+{
+  "name": "photo-retrieval-discovery-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI-powered discovery engine for incomplete-memory photo retrieval research",
+  "scripts": {
+    "dev": "npx vercel dev",
+    "check": "node --check app.js && node --check seed-data.js && node --check api/analyze.js && node --check api/ingest.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

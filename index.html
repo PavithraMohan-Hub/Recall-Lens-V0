@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI-powered discovery engine for incomplete-memory photo retrieval research">
+  <title>Recall Lens — Photo Retrieval Discovery Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="Recall Lens home">
+        <span class="brand-mark" aria-hidden="true">
+          <i></i><i></i><i></i><i></i>
+        </span>
+        <span>Recall Lens</span>
+        <small>Discovery engine</small>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-tab="overview">Overview</button>
+        <button class="nav-item" data-tab="evidence">Evidence explorer</button>
+        <button class="nav-item" data-tab="pipeline">Method</button>
+      </nav>
+      <div class="top-actions">
+        <span class="status-dot"><i></i><span id="engineStatus">Demo ready</span></span>
+        <button class="button ghost" id="exportMenuButton">Export</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="view active" id="overview" aria-labelledby="overview-title">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span>Core Experience research</span><span>Incomplete-memory retrieval</span></div>
+            <h1 id="overview-title">Turn noisy feedback into <em>retrieval evidence.</em></h1>
+            <p>Recall Lens finds the memory cues people retain, the clues they lose, and the point where a search journey breaks—while keeping every insight traceable to evidence.</p>
+            <div class="hero-actions">
+              <button class="button primary" id="openWorkbench">Analyze evidence</button>
+              <button class="button secondary" id="loadDemo">Reload public demo</button>
+            </div>
+            <p class="microcopy">Directional discovery, not prevalence. Every record stays linked to its source.</p>
+          </div>
+          <div class="hero-visual" aria-label="Discovery workflow illustration">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="signal-card signal-a"><span>Remembered</span><strong>yellow note</strong></div>
+            <div class="signal-card signal-b"><span>Forgotten</span><strong>date + words</strong></div>
+            <div class="signal-card signal-c"><span>Behaviour</span><strong>tries “note”</strong></div>
+            <div class="lens-core">
+              <span class="lens-icon">⌕</span>
+              <strong>Scope → code → compare</strong>
+              <small>Evidence, not opinions</small>
+            </div>
+          </div>
+        </div>
+
+        <section class="workbench" id="workbench" aria-labelledby="workbench-title">
+          <div class="section-heading split">
+            <div>
+              <span class="kicker">Research workbench</span>
+              <h2 id="workbench-title">Bring evidence in. Keep the reasoning visible.</h2>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Input method">
+              <button class="active" data-input-tab="paste">Paste</button>
+              <button data-input-tab="upload">Upload</button>
+              <button data-input-tab="urls">URLs</button>
+            </div>
+          </div>
+
+          <div class="input-panel active" data-input-panel="paste">
+            <label for="rawInput">One feedback item per line</label>
+            <textarea id="rawInput" rows="6" placeholder="I remember a screenshot of a train ticket, but not when I saved it or which app sent it…"></textarea>
+          </div>
+          <div class="input-panel" data-input-panel="upload">
+            <label class="dropzone" for="fileInput">
+              <span class="upload-icon">⇧</span>
+              <strong>Drop or choose CSV, JSON, or TXT</strong>
+              <small>Recommended columns: text, source, url, date, sourceType</small>
+              <input id="fileInput" type="file" accept=".csv,.json,.txt,text/csv,application/json,text/plain">
+            </label>
+            <p class="file-feedback" id="fileFeedback"></p>
+          </div>
+          <div class="input-panel" data-input-panel="urls">
+            <label for="urlInput">Public URLs, one per line</label>
+            <textarea id="urlInput" rows="6" placeholder="https://www.reddit.com/r/googlephotos/comments/…&#10;https://support.google.com/photos/thread/…"></textarea>
+            <p class="microcopy">Supported: Reddit, Google Photos Community, Google Play, Apple App Store, YouTube, and selected public article pages.</p>
+          </div>
+          <div class="workbench-footer">
+            <div class="mode-note"><span class="spark">✦</span><span><strong>AI mode</strong> extracts structured research signals. If the server key is unavailable, a transparent local coder is used.</span></div>
+            <div class="workbench-actions">
+              <button class="button ghost" id="clearInput">Clear</button>
+              <button class="button primary" id="analyzeButton"><span>✦</span> Analyze with AI</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="results-section" aria-labelledby="findings-title">
+          <div class="section-heading split">
+            <div>
+              <span class="kicker">Live synthesis</span>
+              <h2 id="findings-title">What the evidence says now</h2>
+              <p id="datasetCaption">Seeded public evidence • refreshed from the current working set</p>
+            </div>
+            <button class="button secondary" id="copyMemo">Copy research memo</button>
+          </div>
+
+          <div class="metric-grid" id="metricGrid"></div>
+
+          <div class="dashboard-grid">
+            <article class="panel span-7">
+              <div class="panel-header">
+                <div>
+                  <span class="kicker">Opportunity comparison</span>
+                  <h3>High effort clusters deserve deeper validation</h3>
+                </div>
+                <div class="legend"><span><i class="dot blue"></i>Lower evidence</span><span><i class="dot purple"></i>More evidence</span></div>
+              </div>
+              <div class="opportunity-map" id="opportunityMap" aria-label="Opportunity scatter plot"></div>
+              <div class="axis-note"><span>Lower evidence breadth</span><span>Higher evidence breadth →</span></div>
+            </article>
+
+            <article class="panel span-5">
+              <div class="panel-header">
+                <div>
+                  <span class="kicker">Cue-gap map</span>
+                  <h3>What users retain vs. lose</h3>
+                </div>
+              </div>
+              <div class="cue-chart" id="cueChart"></div>
+            </article>
+
+            <article class="panel span-12">
+              <div class="panel-header">
+                <div>
+                  <span class="kicker">Ranked opportunity areas</span>
+                  <h3>Comparable problems, with confidence visible</h3>
+                </div>
+                <button class="text-button" data-jump="evidence">Inspect all evidence →</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Opportunity</th><th>Evidence</th><th>Sources</th><th>Avg. effort</th><th>Abandonment</th><th>Confidence</th><th>Score</th></tr>
+                  </thead>
+                  <tbody id="opportunityTable"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="evidence" aria-labelledby="evidence-title">
+        <div class="page-head">
+          <div>
+            <span class="kicker">Traceability layer</span>
+            <h1 id="evidence-title">Evidence explorer</h1>
+            <p>Filter the corpus, inspect how each story was coded, and open the original public source.</p>
+          </div>
+          <div class="page-head-actions">
+            <button class="button secondary" id="exportCsv">Export CSV</button>
+            <button class="button primary" id="exportJson">Export JSON</button>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <label class="search-field"><span>⌕</span><input id="evidenceSearch" type="search" placeholder="Search cues, behaviour, source, or failure…"></label>
+          <select id="scopeFilter" aria-label="Filter by scope"><option value="all">All scope states</option><option value="in_scope">In scope</option><option value="adjacent">Adjacent</option><option value="out_of_scope">Out of scope</option></select>
+          <select id="sourceFilter" aria-label="Filter by source"><option value="all">All source types</option></select>
+          <select id="opportunityFilter" aria-label="Filter by opportunity"><option value="all">All opportunities</option></select>
+        </div>
+
+        <div class="evidence-layout">
+          <div class="evidence-list-wrap">
+            <div class="list-summary"><span id="resultCount">0 records</span><span>Click a card to inspect the coding</span></div>
+            <div class="evidence-list" id="evidenceList"></div>
+          </div>
+          <aside class="detail-panel" id="detailPanel">
+            <div class="empty-state"><span>⌕</span><h3>Select an evidence card</h3><p>The extracted cue, behaviour, failure, impact, and source trail will appear here.</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="pipeline" aria-labelledby="pipeline-title">
+        <div class="page-head method-head">
+          <div>
+            <span class="kicker">Auditable AI workflow</span>
+            <h1 id="pipeline-title">Designed to discover problems—not invent solutions.</h1>
+            <p>The pipeline protects the assignment boundary, retains counterevidence, and makes uncertain AI judgments reviewable.</p>
+          </div>
+          <button class="button primary" id="copyWorkflow">Copy 1-slide workflow</button>
+        </div>
+
+        <div class="pipeline-flow" aria-label="Discovery engine pipeline">
+          <div class="flow-step"><span>01</span><strong>Collect</strong><small>Public feedback + primary research</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>02</span><strong>Normalize</strong><small>Clean, de-duplicate, preserve URLs</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step featured"><span>03</span><strong>Scope gate</strong><small>Incomplete-memory retrieval only</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>04</span><strong>AI code</strong><small>Cues, behaviour, failure, outcome</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>05</span><strong>Compare</strong><small>Clusters, confidence, counterevidence</small></div>
+        </div>
+
+        <div class="method-grid">
+          <article class="method-card">
+            <span class="method-icon blue-bg">◎</span>
+            <h3>Strict relevance gate</h3>
+            <p>An item is core evidence only when a remembered visual item, incomplete or uncertain cues, and a retrieval attempt or barrier are present.</p>
+            <div class="scope-example good"><span>In scope</span><p>“I remember a yellow note, but not when I saved it or the words.”</p></div>
+            <div class="scope-example bad"><span>Out of scope</span><p>“My photos disappeared after I changed backup settings.”</p></div>
+          </article>
+          <article class="method-card">
+            <span class="method-icon purple-bg">✦</span>
+            <h3>Structured behavioural coding</h3>
+            <p>Each incident becomes a comparable record instead of a sentiment score.</p>
+            <div class="schema-chips"><span>remembered cue</span><span>forgotten cue</span><span>query</span><span>failure</span><span>workaround</span><span>outcome</span><span>effort</span><span>confidence</span></div>
+          </article>
+          <article class="method-card">
+            <span class="method-icon green-bg">✓</span>
+            <h3>Human review controls</h3>
+            <p>Records with low confidence, high severity, contradictions, or unclear scope are surfaced for manual review before synthesis.</p>
+            <ul class="check-list"><li>Source link retained</li><li>Counterevidence remains visible</li><li>AI confidence shown</li><li>Raw and coded exports available</li></ul>
+          </article>
+        </div>
+
+        <section class="formula-panel">
+          <div>
+            <span class="kicker">Transparent ranking</span>
+            <h2>Opportunity score prioritizes research attention—not product bets.</h2>
+          </div>
+          <div class="formula"><span>30%<small>evidence breadth</small></span><b>+</b><span>20%<small>source diversity</small></span><b>+</b><span>20%<small>severity</small></span><b>+</b><span>15%<small>effort</small></span><b>+</b><span>10%<small>abandonment</small></span><b>+</b><span>5%<small>confidence</small></span></div>
+          <p>Replace directional evidence proxies with survey reach/frequency and interview depth during final impact sizing.</p>
+        </section>
+
+        <section class="limitations">
+          <div class="section-heading"><span class="kicker">Research integrity</span><h2>Known limitations</h2></div>
+          <div class="limitation-grid">
+            <div><strong>Selection bias</strong><p>Public posters skew toward problems and highly engaged users.</p></div>
+            <div><strong>Prevalence unknown</strong><p>Evidence counts are not percentages of Google Photos users.</p></div>
+            <div><strong>Platform effects</strong><p>Moderation and discoverability shape which conversations are visible.</p></div>
+            <div><strong>AI fallibility</strong><p>Ambiguous stories can be miscoded; low confidence requires review.</p></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer><span>Recall Lens • AI-powered discovery engine</span><span>Public evidence + auditable synthesis</span></footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="export-popover" id="exportPopover" hidden>
+    <button data-export="json">Findings JSON</button>
+    <button data-export="csv">Evidence CSV</button>
+    <button data-export="memo">Research memo</button>
+  </div>
+  <script src="seed-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
